@@ -1,11 +1,11 @@
 /*******************************************************************************
-  Slave Core Shared ADC Configuration Routine source File
+  SecondaryCore Shared ADC Configuration Routine source File
 
   File Name:
     adc.c
 
   Summary:
-    This file includes subroutine for initializing ADC Cores of Slave Controller
+    This file includes subroutine for initializing ADC Cores of SecondaryController
 
   Description:
     Definitions in the file are for dsPIC33CH512MP508 MC PIM plugged onto
@@ -71,7 +71,7 @@ void InitializeADCs(void);
     Routine to configure ADC Module
 
   Description:
-    Function to configure ADC Core of Slave Controller
+    Function to configure ADC Core of SecondaryController
   
   Precondition:
     None.

@@ -19,7 +19,7 @@
         <itemPath>../hal/clock.c</itemPath>
         <itemPath>../hal/device_configuration.c</itemPath>
       </logicalFolder>
-      <itemPath>../master.c</itemPath>
+      <itemPath>../main.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -62,12 +62,12 @@
         </loading>
         <subordinates>
           <sproject>
-            <makeArtifact PL="../../slave/pmsm.X"
+            <makeArtifact PL="../../secondary/pmsm.X"
                           CT="1"
                           CN="default"
                           AC="true"
                           BL="true"
-                          WD="../../slave/pmsm.X"
+                          WD="../../secondary/pmsm.X"
                           BC="${MAKE}  -f Makefile CONF=default"
                           DBC="${MAKE}  -f Makefile CONF=default TYPE_IMAGE=DEBUG_RUN"
                           CC="rm -rf &quot;build/default&quot; &quot;dist/default&quot;"

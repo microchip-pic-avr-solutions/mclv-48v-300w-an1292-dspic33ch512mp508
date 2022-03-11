@@ -122,7 +122,7 @@ int main ( void )
     InitOscillator();
     SetupGPIOPorts();
 
-    /* Turn on LED2 to indicate Slave is enabled and programmed */
+    /* Turn on LED2 to indicate Secondaryis enabled and programmed */
     LED2 = 1;
     /* Initialize Peripherals */
     InitPeripherals();

@@ -246,7 +246,7 @@ void CMP1_ReferenceSet(uint16_t data)
 }
 /**
  * Function to enable/disable DAC1 Module and its output to DAC1OUT pin.
- * Ensure that other Slave DACx are disabled, before setting DAC1CONLbits.DACOEN
+ * Ensure that other SecondaryDACx are disabled, before setting DAC1CONLbits.DACOEN
  * to '1' allowing DACx analog voltage to the DACOUT1 pin.
  * @param state  - Specify to enable or disable the DACx and DACxOUT
  * @return None.

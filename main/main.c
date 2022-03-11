@@ -33,10 +33,10 @@ int main(void)
     
     MSI1CONbits.MTSIRQ = 0;
       
-    /* Routine Program Slave Core */
+    /* Routine Program SecondaryCore */
     _program_secondary(1,0,pmsm);
 
-    /* Routine to start Slave Core */
+    /* Routine to start SecondaryCore */
     _start_secondary();
     
     /* Clock Configuration */

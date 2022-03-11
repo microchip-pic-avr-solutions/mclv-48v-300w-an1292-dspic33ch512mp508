@@ -1,5 +1,5 @@
 /*******************************************************************************
-  Slave Core Shared ADC Configuration Routine Header File
+  SecondaryCore Shared ADC Configuration Routine Header File
 
   File Name:
     adc.h
