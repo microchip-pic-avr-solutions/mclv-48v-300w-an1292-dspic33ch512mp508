@@ -93,7 +93,7 @@ X2C-Scope is a MPLAB X IDE plugin that allows a developer to interact with an ap
 
 The firmware version needed for the demonstration is mentioned under the [Motor Control Application Firmware Required for the Demonstration](#21-motor-control-application-firmware-required-for-the-demonstration) section.
 <p style='text-align: justify;'>
-This firmware is implemented to work on Microchip’s dual-core 16-bit Digital signal controller (dsPIC® DSC) dsPIC33CH512MP508. There are two independent dsPIC DSC Cores called ‘Main Core’ and ‘Secondary Core’ in the device. For more information, see the dsPIC33CH512MP508 Family datasheet.</p>
+This firmware is implemented to work on Microchip’s dual-core 16-bit Digital signal controller (dsPIC® DSC) dsPIC33CH512MP508. There are two independent dsPIC DSC cores called ‘Main Core’ and ‘Secondary Core’ in the device. For more information, see the dsPIC33CH512MP508 Family datasheet.</p>
 
 <p style='text-align: justify;'>In MPLAB X IDE, the code for two cores is developed as separate projects with the following device selections.</p>
 
@@ -114,7 +114,7 @@ Refer to MPLAB X IDE help topic <i>“Path, File, and Folder Name Restrictions�
 
 <p style='text-align: justify;'> The function of the Main Core is defined by the Main Project main.X and they are:
 
-- <p style='text-align: justify;'>To set device configuration bits applicable for both Main and Secondary cores (Configuration bits for Main and Secondary cores exist in Main core). Note that the Configuration bits decide the I/O port ownership between Main Core and Secondary Core. 
+- <p style='text-align: justify;'>To set device configuration bits applicable for both Main and Secondary cores (Configuration bits for Main and Secondary cores exist in Main core). Note that the configuration bits decide the I/O port ownership between Main Core and Secondary Core. 
 - <p style='text-align: justify;'>Configure Main Core Oscillator Subsystem to generate clocks needed to operate core and its peripherals. In the firmware, Main is configured to use at 90MHz.
 - <p style='text-align: justify;'>To program and enable the Secondary core by invoking XC16 library (libpic30.h) routines <i>_program_secondary()</i> and <i>_start_secondary()</i>.
 
