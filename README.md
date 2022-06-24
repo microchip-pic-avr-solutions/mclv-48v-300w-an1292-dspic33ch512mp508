@@ -25,7 +25,7 @@ To clone or download this application from Github, go to the [main page of this 
 >The software used for testing the firmware prior to release is listed above. It is recommended to use the version listed above or later versions for building the firmware.
 ### 2.3 Hardware Tools Required for the Demonstration
 - MCLV-48V-300W Inverter Board (EV18H47A)
-- 	dsPIC33CH512MP508 Motor Control DIM (EV62P66A)
+- 	dsPIC33CH512MP508 Motor Control DIM (EV76LP31A)
 - 24V Power Supply [(AC002013)](https://www.microchipdirect.com/dev-tools/AC002013)
 - 24V 3-Phase Brushless DC Motor [(AC300020)](https://www.microchip.com/en-us/development-tool/AC300020)
   <br />
@@ -35,7 +35,7 @@ To clone or download this application from Github, go to the [main page of this 
 ## 3. HARDWARE SETUP
 <p style='text-align: justify;'>This section describes hardware setup required for the demonstration.</p>
 
-1. <p style='text-align: justify;'> Motor currents are amplified by the amplifiers ( U10 and U11 )on the MCLV-48V-300W Inverter Board. By default, the firmware and DIM are configured to sample and convert external amplifier outputs ('external Op Amp configuration'), measuring the motor currents needed for implementing FOC.</p>
+1. <p style='text-align: justify;'> Motor currents are amplified by the amplifiers (U10 and U11) on the MCLV-48V-300W Inverter Board. The firmware and DIM are configured to sample and convert external amplifier outputs ('external Op Amp configuration'), measuring the motor currents needed for implementing FOC.</p>
 
 2. <p style='text-align: justify;'> Insert the dsPIC33CH512MP508 Motor Control DIM into the DIM Interface Connector J8 provided on the MCLV-48V-300W Inverter Board. Make sure the DIM is placed and oriented correctly.</p>
 
@@ -114,13 +114,13 @@ Refer to MPLAB X IDE help topic <i>“Path, File, and Folder Name Restrictions�
 
 <p style='text-align: justify;'> The function of the Main Core is defined by the Main Project main.X and they are:
 
-- <p style='text-align: justify;'>To set device Configuration bits applicable for both Main and Secondary cores (Con-figuration bits for Main and Secondary cores exist in Main core). Note that the Configu-ration bits decide the I/O port ownership between Main Core and Secondary Core. 
-- <p style='text-align: justify;'>Configure Main Core Oscillator Subsystem to generate clocks needed to operate Core and its peripherals. In the firmware, Main is configured to use at 90MHz.
+- <p style='text-align: justify;'>To set device configuration bits applicable for both Main and Secondary cores (Configuration bits for Main and Secondary cores exist in Main core). Note that the Configuration bits decide the I/O port ownership between Main Core and Secondary Core. 
+- <p style='text-align: justify;'>Configure Main Core Oscillator Subsystem to generate clocks needed to operate core and its peripherals. In the firmware, Main is configured to use at 90MHz.
 - <p style='text-align: justify;'>To program and enable the Secondary core by invoking XC16 library (libpic30.h) routines <i>_program_secondary()</i> and <i>_start_secondary()</i>.
 
 <p style='text-align: justify;'>The function of the Secondary Core (as defined in the Secondary Project pmsm.X) is:
 
-- <p style='text-align: justify;'>To configure Secondary Core Oscillator Subsystem to generate clocks needed to operate Core and its peripherals. In the firmware, the Secondary core is configured to operate at 100MHz.
+- <p style='text-align: justify;'>To configure Secondary Core Oscillator Subsystem to generate clocks needed to operate core and its peripherals. In the firmware, the Secondary core is configured to operate at 100MHz.
 
 - <p style='text-align: justify;'>To configure I/O ports and Secondary Core peripherals (such as PWM Generators PG1, PG2, and PG3, ADC Cores, UART1) required to function the firmware.
 
@@ -151,18 +151,18 @@ Follow below instructions step by step to setup and run the motor control demo a
 
      <p style='text-align: leftjustify;'>
 
-<p style='text-align: leftjustify;'>Verify the “Secondaries” category of Project Properties dialog, and ensure details are as follows (see figure):</p>
+     <p style='text-align: leftjustify;'>Verify the “Secondaries” category of Project Properties dialog, and ensure details are as follows (see figure):</p>
 
-- Item is <span style="font-family:Courier New; font-size:;">pmsm.X </span>
-- Image name is <i>“pmsm”</i>
-- Check Box <i>"Build"</i> is checked
-- Check Box <i>"Debug"</i> is unchecked
-        <p align="left"> <img  src="images/SecondaryPropertiesSelect.png"></p>
+     - Item is <span style="font-family:Courier New; font-size:;">pmsm.X </span>
+     - Image name is <i>“pmsm”</i>
+     - Check Box <i>"Build"</i> is checked
+     - Check Box <i>"Debug"</i> is unchecked
+          <p align="left"> <img  src="images/SecondaryPropertiesSelect.png"></p>
 
-> **_NOTE:_**
->You may encounter build error,</p>
-> - If any of the values are not as mentioned above 
-> - If the secondary project <span style="font-family:Courier New; font-size:;">pmsm.X </span> is moved or deleted from the firmware directory 
+     > **_NOTE:_**
+     >You may encounter build error,</p>
+     > - If any of the values are not as mentioned above 
+     > - If the secondary project <span style="font-family:Courier New; font-size:;">pmsm.X </span> is moved or deleted from the firmware directory 
 
 4. <p style='text-align: leftjustify;'>In the Projects window, right-click on the Secondaries folder of the project tree (of Main project <span style="font-family:Courier New; font-size:;">main.X</span>) and select the project “pmsm.” This will open the Secondary project <span style="font-family:Courier New; font-size:;">pmsm.X</span> in the MPLAB X IDE project window. Alternatively, you can open <span style="font-family:Courier New; font-size:;">(File>Open Project)</span> the Secondary project from its current location like any other MPLAB X project.</p> 
      <p align="left"> <img  src="images/openSecondaryproject.png">></p>
@@ -172,6 +172,7 @@ Follow below instructions step by step to setup and run the motor control demo a
      <p align="left"> <img  src="images/SecondariesPropertiesConfig.png"></p>
 
 5. Unfold Header Files folder of Secondary project tree and click open the header file <span style="font-family:Courier New; font-size:;">userparms.h</span> in Editor window. Verify header file <span style="font-family:Courier New; font-size:;">userparms.h</span> (included in the Secondary project <span style="font-family:Courier New; font-size:;">pmsm.X</span>) to ensure macro definitions <span style="font-family:Courier New; font-size:;">TUNING, OPEN_LOOP_FUNCTIONING, TORQUE_MODE and SINGLE_SHUNT</span> is not defined.
+     <p align="left"> <img  src="images/undef_tuning.png">
      <p align="left"> <img  src="images/configParam.png"></p>
 
    > **_NOTE:_**
@@ -213,7 +214,7 @@ Follow below instructions step by step to setup and run the motor control demo a
     <img  src="images/deviceprogramming.png"></p>
 
      > **_NOTE:_**
-     > <p style='text-align: justify;'>In this firmware configuration, the Main Core programs the Slave Core. When device is programmed, the Slave core image is placed in the Main flash. When the Main Core is powered on and begins execution of code, it transfers the Slave image from the Main flash to the Slave PRAM.  </p>
+     > <p style='text-align: justify;'>In this firmware configuration, the Main Core programs the Secondary Core. When device is programmed, the Secondary core image is placed in the Main flash. When the Main Core is powered on and begins execution of code, it transfers the Secondary image from the Main flash to the Secondary PRAM.  </p>
   
 7. <p style='text-align: justify;'>	 	If the device is successfully programmed, <b>LD2 (‘LED1’)</b>  will be turned ON, indicating that the dsPIC® DSC is enabled. </p> 
     <p align="left">
@@ -239,7 +240,7 @@ Follow below instructions step by step to setup and run the motor control demo a
 
 
 >**_NOTE:_**
->The macro definitions END_SPEED_RPM, NOMINAL_SPEED_RPM, and MAXIMUM_SPEED_RPM are specified in userparms.h file included in the project pmsm.X. The definitions NOMINAL_SPEED_RPM, and MAXIMUM_SPEED_RPM are defined as per the specification provided by the Motor manufacturer. Exceeding manufacture specification may lead to damage of the motor or(and) the board. 
+>The macro definitions END_SPEED_RPM, NOMINAL_SPEED_RPM, and MAXIMUM_SPEED_RPM are specified in userparms.h file included in the project pmsm.X. The definitions NOMINAL_SPEED_RPM, and MAXIMUM_SPEED_RPM are defined as per the specification provided by the motor manufacturer. Exceeding manufacture specification may lead to damage of the motor or(and) the board. 
 
 ## 5.3  Data visualization through X2C-Scope Plug-in of MPLABX
 <p style='text-align: justify;'>
@@ -256,7 +257,7 @@ Follow below instructions step by step to setup and run the motor control demo a
       <p align="left">
        <img  src="images/PMSMCleanBuild.png"></p>
 
-5. Ensure that the checkbox “Load symbols when programming or building for pro-duction (slows process)” is checked, which is under the “Loading” category of the Project Properties window. </p>
+5. Ensure that the checkbox “Load symbols when programming or building for production (slows process)” is checked, which is under the “Loading” category of the Project Properties window (in the <span style="font-family:Courier New; font-size:;">pmsm.X</span> project properties). </p>
       <p align="left">
        <img  src="images/LoadingPMSMSetting.png"></p>
 
@@ -268,7 +269,7 @@ Follow below instructions step by step to setup and run the motor control demo a
     <p align="left">
     <img  src="images/x2cprojectselection.png"></p>
 
-8.	Serial communication needs to be set up, as shown in the following figure. Ensure the communication baud rate is set to 115200 as configured in the application firmware. The COM port used depends on the system settings. The <span style="font-family:Courier New; font-size:;">refresh button</span> lists the available COM Ports. Select the COM Port as per the connection.
+8.	Serial communication needs to be set up, as shown in the following figure. Ensure the communication baud rate is set to 115200 as configured in the application firmware. The COM port used depends on the system settings. The <span style="font-family:Courier New; font-size:;">refresh button</span> lists the available COM ports. Select the COM port as per the connection.
 
     <p align="left">
      <img  src="images/x2cconnectionsetup.png"></p>
@@ -280,18 +281,18 @@ Follow below instructions step by step to setup and run the motor control demo a
     <img  src="images/x2cconnectionbutton.png"></p>
 
 
-10. Set the <b>'Project Setup'</b> as shown below and click <b>'Set Value'</b>. Set Scope sample time as interval at which <span style="font-family:Courier New; font-size:1;">X2CScopeUpdate()</span> is called. In this application it is every 50µs.
+10. Set the <b>'Project Setup'</b> as shown below and click <b>'Set Values'</b>. Set 'Scope Sampletime' as interval at which <span style="font-family:Courier New; font-size:1;">X2CScopeUpdate()</span> is called. In this application it is every 50µs.
       <p align="left">
       <img  src="images/x2cprojectsetup.png"></p>
 
 
-11. When the setup is established, click on open scope View (under sub window <b>'Data Views'</b>), this opens 'Scope Window'.
+11. When the setup is established, click on <b>'Open Scope View'</b> (under sub window <b>'Data Views'</b>), this opens 'Scope Window'.
      <p align="left">
       <img  src="images/x2cdataview.png"></p>
     	     
 
-12. In this window, select the variables that needs to be monitored. To do this, click on the source against each channel, a window Select Variables opens upon the screen. From the available list, the required variable can be chosen. Ensure check boxes Enable & Visible are checked for the variables to be plotted.<br>
-To view data plots continuously, uncheck <span style="font-family:Courier New; font-size:1;">Single-shot </span>. When <span style="font-family:Courier New; font-size:1;">Single-shot</span> is checked it captures the data once and stops. The Sample time factor value multiplied with Sample time determines the time difference between any two consecutive data points on the plot.
+12. In this window, select the variables that needs to be monitored. To do this, click on the source against each channel, a window Select Variables opens upon the screen. From the available list, the required variable can be chosen. Ensure check boxes Enable and Visible are checked for the variables to be plotted.<br>
+To view data plots continuously, uncheck <span style="font-family:Courier New; font-size:;"> Single-shot</span>. When <span style="font-family:Courier New; font-size:;">Single-shot</span> is checked it captures the data once and stops. The Sample time factor value multiplied with Sample time determines the time difference between any two consecutive data points on the plot.
     <p align="left">
     <img  src="images/x2cdatapointselection.png"></p>
 
