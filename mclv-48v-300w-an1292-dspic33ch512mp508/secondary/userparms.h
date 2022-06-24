@@ -76,9 +76,10 @@ constant slope. The slope is determined by TUNING_DELAY_RAMPUP constant.
 /* Definition for torque mode - for a separate tuning of the current PI
 controllers, tuning mode will disable the speed PI controller */
 #undef TORQUE_MODE
-/* FOC with single shunt is enabled */
-/* undef to work with dual Shunt  */    
-#undef SINGLE_SHUNT
+    
+/* FOC with dual shunt is enabled */
+/* define to work with single Shunt  */    
+#define SINGLE_SHUNT
 
 /****************************** Motor Parameters ******************************/
 /********************  support xls file definitions begin *********************/
@@ -158,7 +159,7 @@ before the open loop speed ramp up */
 #define Q_CURRENT_REF_OPENLOOP NORM_CURRENT(1.0)
 
 /* Specify Over Current Limit - DC BUS */
-#define Q15_OVER_CURRENT_THRESHOLD NORM_CURRENT(3.0)
+#define Q15_OVER_CURRENT_THRESHOLD NORM_CURRENT(10.0)
 
 /* Maximum motor speed converted into electrical speed */
 #define MAXIMUMSPEED_ELECTR MAXIMUM_SPEED_RPM*NOPOLESPAIRS

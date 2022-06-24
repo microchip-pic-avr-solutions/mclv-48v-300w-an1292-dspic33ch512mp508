@@ -122,8 +122,8 @@ int main ( void )
     InitOscillator();
     SetupGPIOPorts();
 
-    /* Turn on LED2 to indicate Secondaryis enabled and programmed */
-    LED2 = 1;
+    /* Turn on LED2 to indicate Secondary is enabled and programmed */
+    LED1 = 1;
     /* Initialize Peripherals */
     InitPeripherals();
     DiagnosticsInit();
@@ -150,7 +150,7 @@ int main ( void )
                 {
                     EnablePWMOutputsInverterA();
                     uGF.bits.RunMotor = 1;
-                    LED1 = 1;
+                    LED2 = 1;
                 }
 
             }
@@ -193,7 +193,7 @@ int main ( void )
  */
 void ResetParmeters(void)
 {
-    LED1 = 0;
+    LED2 = 0;
     /* Make sure ADC does not generate interrupt while initializing parameters*/
 	DisableADCInterrupt();
     
