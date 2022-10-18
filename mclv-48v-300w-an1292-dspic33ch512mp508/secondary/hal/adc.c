@@ -148,13 +148,13 @@ void InitializeADCs (void)
     /* Shared ADC Core is Disabled prior to configuration */
     ADCON3Hbits.SHREN = 0;
     /* ADC Module Clock Source Selection bits 
-       0b11 = FVCO/4;0b10 = AFVCODIV ;0b01 = FOSC ; 0b00 = FP (FOSC/2) */
+       0b11 = FVCO/4;0b10 = AFVCODIV ;0b01 = FOSC ; 0b00 = FP(Peripheral Clock) */
     ADCON3Hbits.CLKSEL = 0;
     /* ADC Module Clock Source Divider bits (1 to 64)
        The divider forms a TCORESRC clock used by all ADC cores (shared and 
        dedicated) from the TSRC ADC module clock selected by the CLKSEL<2:0> .
-       000000 = 1 Source Clock Periods */
-    ADCON3Hbits.CLKDIV = 0;
+       000001 = 2 Source Clock Periods */
+    ADCON3Hbits.CLKDIV = 1;
     
     /* Initialize ADC CONTROL REGISTER 4 LOW */
     ADCON4L      = 0x0000;
@@ -182,7 +182,7 @@ void InitializeADCs (void)
        These bits determine the time between the trigger event and 
        the start of conversion in the number of the Core Clock Periods (TADCORE)
        Ranges from 2 to 1025 TADCORE
-       if SHRSAMC = 15,then Sampling time is 17 TADCORE */
+       if SHRSAMC = 15 ,then Sampling time is 17 TADCORE */
     ADCORE0Lbits.SAMC = 15;
     /* Initialize DEDICATED ADC CORE 0 CONTROL REGISTER HIGH */
     ADCORE0H     = 0x0000;
@@ -230,14 +230,20 @@ void InitializeADCs (void)
        0 = Channel output data is unsigned    */
     /*ADMOD0L configures Output Data Sign for Analog inputs  AN0 to AN7 */
     ADMOD0L = 0x0000;
+    /*Ia*/
     ADMOD0Lbits.SIGN0 = 1;
+    /*Ib*/
     ADMOD0Lbits.SIGN1 = 1;
     /*ADMOD0H configures Output Data Sign for Analog inputs  AN8 to AN15 */
-    ADMOD0H = 0;
+    ADMOD0H = 0x0000;
+	/*Vbus*/
+	ADMOD0Hbits.SIGN10 = 0;
+    /*Ibus*/
     ADMOD0Hbits.SIGN13 = 1;
+	/*POT*/
     ADMOD0Hbits.SIGN15 = 0;
     /*ADMOD1L configures Output Data Sign for Analog inputs  AN16 to AN17 */
-    ADMOD1L = 0;
+    ADMOD1L = 0x0000;
     
     /* Ensuring all interrupts are disabled and Status Flags are cleared */
     ADIEL = 0;
@@ -331,17 +337,17 @@ void InitializeADCs (void)
     
 
 #ifdef SINGLE_SHUNT
-    /* Trigger Source for Analog Input #13  = 0b0101 */
+    /* Trigger Source for Analog Input #13  = 0b0101 for Ibus */
     ADTRIG3Lbits.TRGSRC13 = 0x5;
 #else
-      /* Trigger Source for Analog Input #0  = 0b0100 */
+      /* Trigger Source for Analog Input #0  = 0b0100 for Ia */
     ADTRIG0Lbits.TRGSRC0 = 0x4;
-    /* Trigger Source for Analog Input #1  = 0b0100 */
+    /* Trigger Source for Analog Input #1  = 0b0100 for Ib */
     ADTRIG0Lbits.TRGSRC1 = 0x4;  
 #endif
-    /* Trigger Source for Analog Input #15  = 0b0100 */
+	/* Trigger Source for Analog Input #10  = 0b0100 for Vbus */
+    ADTRIG2Hbits.TRGSRC10 = 0x4;
+    /* Trigger Source for Analog Input #15  = 0b0100 for POT */
     ADTRIG3Hbits.TRGSRC15 = 0x4;
     
 }
-
-/*EOF*/
