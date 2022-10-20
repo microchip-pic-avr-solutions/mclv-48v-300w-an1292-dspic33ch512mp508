@@ -5,10 +5,10 @@
  * This header file lists interface functions - to configure and enable UART1 
  * module and its features
  * 
- * Definitions in this file are for dsPIC33CH512MP508 External Op-AMP MC PIM
- * plugged onto Motor Control Development board from Microchip.
+ * Definitions in the file are for dsPIC33CH512MP508 MC DIM plugged onto 
+ * Motor Control Development board from Microchip.
  * 
- * Component: Slave1 Core - HAL - UART1
+ * Component: Secondary Core - HAL - UART1
  * 
  */
 // </editor-fold>

@@ -59,7 +59,6 @@
 #include "adc.h"
 #include "pwm.h"
 #include "cmp.h"
-#include "general.h"
 
 // <editor-fold defaultstate="expanded" desc="VARIABLES ">
 BUTTON_T buttonStartStop;
@@ -87,7 +86,7 @@ static void ButtonScan(BUTTON_T * ,bool);
 
 bool IsPressed_Button1(void)
 {
-    if(buttonStartStop.status)
+    if (buttonStartStop.status)
     {
         buttonStartStop.status = false;
         return true;
@@ -97,9 +96,10 @@ bool IsPressed_Button1(void)
         return false;
     }
 }
+
 bool IsPressed_Button2(void)
 {
-    if(buttonSpeedHalfDouble.status)
+    if (buttonSpeedHalfDouble.status)
     {
         buttonSpeedHalfDouble.status = false;
         return true;
@@ -123,11 +123,11 @@ void BoardService(void)
     {
         /* Button scanning loop for Button 1 to start Motor A */
         ButtonScan(&buttonStartStop,BUTTON_START_STOP);
-				
+
         /* Button scanning loop for SW2 to enter into filed
             weakening mode */
         ButtonScan(&buttonSpeedHalfDouble,BUTTON_SPEED_HALF_DOUBLE);
-		
+
         boardServiceISRCounter = 0;
     }
 }
@@ -170,7 +170,7 @@ void ButtonGroupInitialize(void)
     buttonSpeedHalfDouble.state = BUTTON_NOT_PRESSED;
     buttonSpeedHalfDouble.debounceCount = 0;
     buttonSpeedHalfDouble.state = false;
-	
+
 }
 // *****************************************************************************
 /* Function:
@@ -202,11 +202,10 @@ void InitPeripherals(void)
     cmpReference = (uint16_t)(__builtin_mulss(Q15_OVER_CURRENT_THRESHOLD,2047)>>15);
     cmpReference = cmpReference + 2048; 
     CMP1_ReferenceSet(cmpReference);
-
     InitializeADCs();
     
     InitPWMGenerators();
-
+    
     /* Make sure ADC does not generate interrupt while initializing parameters*/
     DisableADCInterrupt();
 }

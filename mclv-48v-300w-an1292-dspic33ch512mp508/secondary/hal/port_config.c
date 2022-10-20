@@ -10,9 +10,9 @@
     pins
 
   Description:
-    Definitions in the file are for dsPIC33CH512MP508 MC PIM plugged onto
-    MCLV-3 Motor Control Development board from Microchip
-Bundle
+    Definitions in the file are for dsPIC33CH512MP508 MC DIM plugged onto
+    Motor Control Development board from Microchip
+ 
 *******************************************************************************/
 /*******************************************************************************
 * Copyright (c) 2017 released Microchip Technology Inc.  All rights reserved.
@@ -131,7 +131,7 @@ void SetupGPIOPorts(void)
 }
 // *****************************************************************************
 /* Function:
-    MapGPIOHWFunction()
+    Map_GPIO_HW_Function()
 
   Summary:
     Routine to setup GPIO pin used as input/output analog/digital etc
@@ -155,10 +155,11 @@ void SetupGPIOPorts(void)
 
 void MapGPIOHWFunction(void)
 {
- 
+    
     /* ANALOG SIGNALS */
 
-    // Configure Port pins for Motor Current Sensing
+    // Configure Port pins for Motor Current Sensing 
+
     
     // IA_EXT(S1AN0) : DIM #19
     ANSELAbits.ANSELA3 = 1;
@@ -176,6 +177,10 @@ void MapGPIOHWFunction(void)
     // POT1 : DIM #28
     TRISAbits.TRISA1 = 1;          // PIN18: S1AN15/S1RA1
     ANSELAbits.ANSELA1 = 1;
+	
+    /*DC Bus Voltage Signals : DIM:039*/
+    ANSELCbits.ANSELC0 = 1;
+    TRISCbits.TRISC0 = 1;         //PIN15: S1AN10/S1RP48/S1RC0
     
     /* Digital SIGNALS */   
     // DIGITAL INPUT/OUTPUT PINS
@@ -194,10 +199,6 @@ void MapGPIOHWFunction(void)
     TRISDbits.TRISD4 = 0 ;          
     TRISDbits.TRISD3 = 0 ;         
     
-    // FAULT Pins
-    // FAULT : DIM #40
-    TRISDbits.TRISD15 = 1;           // PIN:10  S1PCI22/S1RD15
-
     // Debug LEDs
     // LED1 : DIM #30
     TRISEbits.TRISE2 = 0;          // PIN:17 - RE2 S1RE2
@@ -210,7 +211,7 @@ void MapGPIOHWFunction(void)
     // SW2 : DIM #36
     TRISEbits.TRISE5 = 1;            // PIN:24 RE5 S1RE5  
 	
-	/** Diagnostic Interface for MCLV-2,MCHV-2/3,LVMCDB etc.
+	/** Diagnostic Interface for MCLV-48V-300W.
         Re-map UART Channels to the device pins connected to the following 
         PIM pins on the Motor Control Development Boards .
         UART_RX : DIM #54 (Input)
@@ -218,6 +219,5 @@ void MapGPIOHWFunction(void)
     _U1RXR = 47;
     _RP46R = 0b000001;
     
+    
 }
-
-/*EOF*/
