@@ -80,25 +80,25 @@ To get help on
 If MPLAB IDE v8 or earlier is already installed on your computer, then run the MPLAB driver switcher (Installed when MPLAB®X IDE is installed) to switch from MPLAB IDE v8 drivers to MPLAB X IDE drivers. If you have Windows 8 or 10, you must run the MPLAB driver switcher in **Administrator Mode**. To run the Device Driver Switcher GUI application as administrator, right-click on the executable (or desktop icon) and select **Run as Administrator**. For more details, refer to the MPLAB X IDE help topic **“Before You Begin: Install the USB Device Drivers (For Hardware Tools): USB Driver Installation for Windows Operating Systems.”**
 
 ### 4.2 Setup: X2C-SCOPE
-X2C-Scope is an MPLAB X IDE plugin that allows developers to interact with an application while it runs. X2C-Scope enables you to read, write, and plot global variables (for motor con-trol) in real-time. It communicates with the target using the UART. To use X2C-Scope, the plugin must be installed. To set up and use X2C-Scope, refer to the instructions provided on the [web page](https://x2cscope.github.io/docs/MPLABX_Plugin.html).
+X2C-Scope is an MPLAB X IDE plugin that allows developers to interact with an application while it runs. X2C-Scope enables you to read, write, and plot global variables (for motor control) in real-time. It communicates with the target using the UART. To use X2C-Scope, the plugin must be installed. To set up and use X2C-Scope, refer to the instructions provided on the [web page](https://x2cscope.github.io/docs/MPLABX_Plugin.html).
 
 ## 5.  BASIC DEMONSTRATION
 ### 5.1 Firmware Description
 The firmware version needed for the demonstration is mentioned in the section [Motor Control Application Firmware Required for the Demonstration](#21-motor-control-application-firmware-required-for-the-demonstration) section. This firmware is implemented to work on Microchip’s dual-core 16-bit Digital signal control-ler (dsPIC® DSC) **dsPIC33CH512MP508**. There are two independent dsPIC DSC cores called **Main Core** and **Secondary Core** in the device. For more information, see the **dsPIC33CH512MP508 Family datasheet (DS70005371)**.
 
 In MPLAB X IDE, the code for two cores is developed as separate projects with the follow-ing device selections.
-- Device selection in Main Project (code for Main Core) is **dsPIC33CH512MP508**
-- Device selection in Secondary Project (code for Secondary Core) is **dsPIC33CH512MP508S1**
+- Device selection in Main Project (code for **Main Core**) is **dsPIC33CH512MP508**
+- Device selection in Secondary Project (code for **Secondary Core**) is **dsPIC33CH512MP508S1**
 
-Hence the firmware used in this demonstration consists of two MPLAB X projects, **main.X** (Main Project) and **pmsm.X** (Secondary Project). 
+Hence the firmware used in this demonstration consists of two MPLAB X projects, **main.X** (**Main Project**) and **pmsm.X** (**Secondary Project**). 
 
 The function of the Main Core is defined by the Main Project **main.X**, they are:
 - To set device configuration bits applicable for both Main and Secondary cores (Configuration bits for Main and Secondary cores exist in Main core). Note that the configuration bits decide the I/O port ownership between Main Core and Secondary Core. 
-- Configure Main Core Oscillator Subsystem to generate clocks needed to operate Core and its peripherals. In the firmware, Main is configured to use at 90MHz.
+- Configure Main Core Oscillator Subsystem to generate clocks needed to operate Core and its peripherals. In the firmware, Main is configured to run at 90MHz.
 - To program and enable the Secondary core by invoking XC16 library (<code>libpic30.h</code>) routines <code>_program_secondary()</code> and <code>_start_secondary()</code>.
 
 The function of the Secondary Core (as defined in the Secondary Project **pmsm.X**) is:
-- To configure Secondary Core Oscillator Subsystem to generate clocks needed to oper-ate core and its peripherals. In the firmware, the Secondary core is configured to oper-ate at 100MHz.
+- To configure Secondary Core Oscillator Subsystem to generate clocks needed to oper-ate core and its peripherals. In the firmware, the Secondary core is configured to operate at 100MHz.
 - To configure I/O ports and Secondary Core peripherals (such as PWM Generators PG1, PG2, and PG3, ADC Cores, UART1) required to function the firmware.
 - To execute the Motor Control Demo Application based on the Microchip Application note AN1292. 
 
@@ -108,7 +108,7 @@ The firmware directory structure is shown below:
 
 Once Main Core programs and enables the Secondary Core, it can autonomously run the Motor Control Demo application residing in its PRAM. The Motor Control Demo application uses a push button to start or stop the motor and a potentiometer to vary the speed of the motor.
 
-The Motor Control Demo application uses a push button to start or stop the motor and a potentiometer to vary the speed of the motor. This Motor Control Demo Application config-ures and uses peripherals like PWM, ADC, UART, etc. For more details, refer to Microchip Application note **AN1292, “Sensorless Field Oriented Control (FOC) for a Permanent Magnet Synchronous Motor (PMSM) Using a PLL Estimator and Field Weakening (FW),”** available on the [Microchip website.]((https://www.microchip.com/).)
+This Motor Control Demo Application configures and uses peripherals like PWM, ADC, UART, etc. For more details, refer to Microchip Application note **AN1292, “Sensorless Field Oriented Control (FOC) for a Permanent Magnet Synchronous Motor (PMSM) Using a PLL Estimator and Field Weakening (FW),”** available on the [Microchip website.]((https://www.microchip.com/).)
 
 > **Note:**</br>
 > The project may not build correctly in Windows OS if the Maximum path length of any source file in the project is more than 260 characters. In case the absolute path exceeds or nears the maximum length, do any (or both) of the following:
@@ -146,12 +146,12 @@ Follow the below instructions, step by step, to set up and run the motor control
      > - any of the values are not as mentioned above 
      > - the secondary project **pmsm.X** is moved or deleted from the firmware directory   </p>
 
-4. In the **Projects window**, right-click on the ****Secondaries** folder of the project tree (of Main project **main.X**) and select the project **pmsm**. This will open the Secondary project **pmsm.X** in the MPLAB X IDE project window. Alternatively, you can open (**File>Open Project**) the Secondary project from its current location like any other MPLAB X project.
+4. In the **Projects window**, right-click on the **Secondaries** folder of the project tree (of Main project **main.X**) and select the project **pmsm**. This will open the Secondary project **pmsm.X** in the MPLAB X IDE project window. Alternatively, you can open (**File>Open Project**) the Secondary project from its current location like any other MPLAB X project.
 
      <p align="left">
      <img  src="images/idesecondaryopen.png"></p>
 
-     The selected device in Secondary project **pmsm.X** can be viewed by opening its **Project Properties** Dialog. As can be seen from the figure below, this **Device** is set as **dsPIC33CH512MP508S1**(as shown in the figure below), representing the secondary core of the **dsPIC33CH512MP508**. 
+     The selected device in Secondary project **pmsm.X** can be viewed by opening its **Project Properties** Dialog. As can be seen from the figure below, this **Device** is set as **dsPIC33CH512MP508S1**(as shown in the figure below), representing the secondary core of the dsPIC33CH512MP508. 
 
      <p align="left">
      <img  src="images/idesecondaryprojectproperties_2.png"></p>
@@ -195,7 +195,7 @@ Follow the below instructions, step by step, to set up and run the motor control
 
      This step is required to build the Secondary Project with a specific compiler version.
 
-8. Ensure that the checkbox **Load symbols when programming or building for production (slows process)** is checked under the **Loading** category of the **Project Properties** window of **Secondary** project ****pmsm.X**       
+8. Ensure that the checkbox **Load symbols when programming or building for production (slows process)** is checked under the **Loading** category of the **Project Properties** window of **Secondary** project **pmsm.X**       
         
       <p align="left">
       <img  src="images/loadvariables.png"></p>
@@ -211,32 +211,33 @@ Follow the below instructions, step by step, to set up and run the motor control
     <img  src="images/deviceprogramming.png"></p>
 
      > **Note:**</br>
-     > In this firmware configuration, the Main Core programs the Secondary Core. When device is programmed, the Secondary core image is placed in the Main flash. When the Main Core is powered on and begins execution of code, it transfers the Second-ary image from the Main flash to the Secondary PRAM. </p>
+     > In this firmware configuration, the Main Core programs the Secondary Core. When device is programmed, the Secondary core image is placed in the Main flash. When the Main Core is powered on and begins execution of code, it transfers the Secondary image from the Main flash to the Secondary PRAM. </p>
   
-7. If the device is successfully programmed, **LD2 (LED1)** will be turned **ON**, indicating that the dsPIC® DSC is enabled.
+10. If the device is successfully programmed, **LD2 (LED1)** will be turned **ON**, indicating that the dsPIC® DSC is enabled.
     <p align="left">
      <img  src="images/led.png"></p>
 
 
-8. Run or stop the motor by pressing the push button **SW1.** The motor should start spinning smoothly in one direction in the nominal speed range. Ensure that the motor is spinning smoothly without any vibration. The LED **LD3(LED2)** is turned **ON** to show the button is pressed to start the motor.
+11. Run or stop the motor by pressing the push button **SW1.** The motor should start spinning smoothly in one direction in the nominal speed range. Ensure that the motor is spinning smoothly without any vibration. The LED **LD3(LED2)** is turned **ON** to show the button is pressed to start the motor.
      <p align="left">
      <img  src="images/pushbuttons.png"></p>
  
 
-9. The motor speed can be varied using the potentiometer **(POT1).**
+12. The motor speed can be varied using the potentiometer **(POT1).**
     <p align="left">
     <img  src="images/potentiometer.png"></p>
  
-10. Press the push button **SW2** to enter the extended speed range (<code>NOMINAL_SPEED_RPM</code> to <code>MAXIMUM_SPEED_RPM</code>).
-Press the push button **SW2** again to revert the speed of the motor to its nominal speed range (<code>END_SPEED_RPM</code> to <code>NOMINAL_SPEED_RPM</code>).
-      <p align="left">
+13. Press the push button **SW2** to enter the extended speed range (<code>NOMINAL_SPEED_RPM</code> to <code>MAXIMUM_SPEED_RPM</code>).
+Press the push button **SW2** again to revert the speed of the motor to its nominal speed range (<code>END_SPEED_RPM</code> to <code>NOMINAL_SPEED_RPM</code>).</p>
+
+     <p align="left">
      <img  src="images/stopButton.png"></p> 
 
-11. Press the push button **SW1** to stop the motor.
+14. Press the push button **SW1** to stop the motor.
 
 
 >**Note:**</br>
->The macros <code>END_SPEED_RPM</code>, <code>NOMINAL_SPEED_RPM</code>, and <code>MAXIMUM_SPEED_RPM</code> are specified in the header file <code>**userparms.h**</code> included in the project **pmsm.X.** The macros <code>NOMINAL_SPEED_RPM</code> and <code>MAXIMUM_SPEED_RPM</code> are defined as per the Motor manu-facturer’s specifications. Exceeding manufacture specifications may damage the motor or the board or both.
+>The macros <code>END_SPEED_RPM</code>, <code>NOMINAL_SPEED_RPM</code>, and <code>MAXIMUM_SPEED_RPM</code> are specified in the header file <code>**userparms.h**</code> included in the project **pmsm.X.** The macros <code>NOMINAL_SPEED_RPM</code> and <code>MAXIMUM_SPEED_RPM</code> are defined as per the Motor manufacturer’s specifications. Exceeding manufacture specifications may damage the motor or the board or both.
 
 ## 5.3  Data visualization through X2C-Scope Plug-in of MPLAB X
 
@@ -245,18 +246,22 @@ X2C-Scope is a third-party plug-in in MPLAB X, which helps in real-time diagnost
 1. To establish serial communication with the host PC, connect a micro-USB cable between the host PC and **connector J16** on the MCLV-48V-300W Inverter Board. This interface is also used for programming.
 
 
-2. Ensure the application is configured and running as described under section [5.2 Basic Demonstration](#52-basic-demonstration) by following steps 1 through 11.
+2. Ensure the application is configured and running as described under section [5.2 Basic Demonstration](#52-basic-demonstration) by following steps 1 through 14.
 
-3. Open the **X2C-Scope** window by selecting **Tools>Embedded>X2CScope.**
+3. Build the secondary project **pmsm.X**. To do that, right click on the project **pmsm.X** and select **Clean and Build**.
+      <p align="left">
+       <img  src="images/x2cscopecleanbuild.png"></p>
+
+4. Open the **X2C-Scope** window by selecting **Tools>Embedded>X2CScope.**
       <p align="left">
        <img  src="images/x2cselection.png"></p>
  
 
-4. **In the X2C-Scope Configuration** window, open the **Connection Setup** tab and click **Select Project.** This opens the drop-down menu **Select Project** with a list of opened projects. Select the specific project **pmsm** from the list of projects and click **OK.**
+5. **In the X2C-Scope Configuration** window, open the **Connection Setup** tab and click **Select Project.** This opens the drop-down menu **Select Project** with a list of opened projects. Select the specific project **pmsm** from the list of projects and click **OK.**
     <p align="left">
     <img  src="images/x2cprojectselection.png"></p>
 
-5. To configure and establish the serial communication for **X2C-Scope**, open the **X2CScope Configuration** window, click on the **Connection Setup** tab and:
+6. To configure and establish the serial communication for **X2C-Scope**, open the **X2CScope Configuration** window, click on the **Connection Setup** tab and:
      - Set **Baudrate** as **115200**, which is configured in the application firmware. 
      - Click on the **Refresh** button to refresh and update the list of the available Serial COM ports connected to the Host PC. 
      - Select the specific **Serial port** detected when interfaced with the MCLV-48V-300W Inverter Board. The **Serial port** depends on the system settings
@@ -265,12 +270,12 @@ X2C-Scope is a third-party plug-in in MPLAB X, which helps in real-time diagnost
      <img  src="images/x2cconnectionsetup.png"></p>
  
 
-6. Once the **Serial port** is detected, click on **Disconnected** and turn to **Connected**, to establish serial communication between the Host PC and the board.
+7. Once the **Serial port** is detected, click on **Disconnected** and turn to **Connected**, to establish serial communication between the Host PC and the board.
      <p align="left">
     <img  src="images/x2cconnectionbutton.png"></p>
 
 
-7. Open the **Project Setup** tab in the **X2CScope Configuration** window and,
+8. Open the **Project Setup** tab in the **X2CScope Configuration** window and,
      - Set **Scope Sampletime** as the interval at which <code>X2CScopeUpdate()</code> is called. In this application, it is every <code>50µs.</code> 
      - Then, click **Set Values** to save the configuration.
 
@@ -278,21 +283,21 @@ X2C-Scope is a third-party plug-in in MPLAB X, which helps in real-time diagnost
       <img  src="images/x2cprojectsetup.png"></p>
 
 
-8.	Click on **Open Scope View** (in the **Data Views** tab of the **X2CScope Configuration** Window); this opens **Scope Window.**
+9.	Click on **Open Scope View** (in the **Data Views** tab of the **X2CScope Configuration** Window); this opens **Scope Window.**
      <p align="left">
       <img  src="images/x2cdataview.png"></p>
     	     
-9. In the **Scope Window**, select the variables that must be watched. To do this, click on the **Source** against each channel, and a window **Select Variables** opens on the screen. From the available list, the required variable can be chosen. Ensure checkboxes **Enable** and **Visible** are checked for the variables to be plotted.
+10. In the **Scope Window**, select the variables that must be watched. To do this, click on the **Source** against each channel, and a window **Select Variables** opens on the screen. From the available list, the required variable can be chosen. Ensure checkboxes **Enable** and **Visible** are checked for the variables to be plotted.
 To view data plots continuously, uncheck **Single-shot.** When **Single-shot** is checked, it captures the data once and stops. The **Sample time factor** value multiplied by **Sample time** decides the time difference between any two consecutive data points on the plot.
     <p align="left">
     <img  src="images/x2cdatapointselection.png"></p>
 
-10.	Click on **SAMPLE**, then the X2C-Scope window plots variables in real-time, which updates automatically.
+11.	Click on **SAMPLE**, then the X2C-Scope window plots variables in real-time, which updates automatically.
      <p align="left">
      <img  src="images/x2csample.png"></p>
  
 
-11.	Click on **ABORT** to stop.
+12.	Click on **ABORT** to stop.
      <p align="left">
      <img  src="images/x2cabort.png"></p>
  
@@ -300,14 +305,15 @@ To view data plots continuously, uncheck **Single-shot.** When **Single-shot** i
 For additional information, refer following documents or links.
 1. AN1292 Application Note “[Sensorless Field Oriented Control (FOC) for a Permanent Magnet Synchronous Motor (PMSM) Using a PLL Estimator and Field Weakening (FW)](https://ww1.microchip.com/downloads/aemDocuments/documents/OTH/ApplicationNotes/ApplicationNotes/01292A.pdf)”
 2. AN1299 Application Note “[Single-Shunt Three-Phase Current Reconstruction Algorithm for Sensorless FOC of a PMSM](http://ww1.microchip.com/downloads/en/appnotes/01299a.pdf)”
-3. MCLV-48V-300W Inverter Board User’s Guide (DS50003297) 
-4. dsPIC33CH512MP508 Motor Control Dual In-Line Module (DIM) Information Sheet (DS50003069)
-5. dsPIC33CH512MP508 Family datasheet [(DS70005371D)](https://ww1.microchip.com/downloads/en/DeviceDoc/dsPIC33CH512MP508-Family-Data-Sheet-DS70005371D.pdf)
-6. [Family Reference manuals (FRM) of dsPIC33CH512MP508 family](https://www.microchip.com/en-us/product/dsPIC33CH512MP508#document-table)
-7. MPLAB® X IDE User’s Guide (DS50002027) or MPLAB® X IDE help
-8. [MPLAB® X IDE installation](http://microchipdeveloper.com/mplabx:installation)
-9. [MPLAB® XC16 Compiler installation](http://microchipdeveloper.com/xc16:installation)
-10. [Installation and setup of X2Cscope plugin for MPLAB X](https://x2cscope.github.io/docs/MPLABX_Plugin.html)
+3. AN2721 "[Getting Started with Dual Core](https://ww1.microchip.com/downloads/aemDocuments/documents/OTH/ApplicationNotes/ApplicationNotes/AN2721-Getting-Started-with-Dual-Core-DS00002721A.pdf)" 
+4. MCLV-48V-300W Inverter Board User’s Guide (DS50003297) 
+5. dsPIC33CH512MP508 Motor Control Dual In-Line Module (DIM) Information Sheet (DS50003069)
+6. dsPIC33CH512MP508 Family datasheet [(DS70005371D)](https://ww1.microchip.com/downloads/en/DeviceDoc/dsPIC33CH512MP508-Family-Data-Sheet-DS70005371D.pdf)
+7. [Family Reference manuals (FRM) of dsPIC33CH512MP508 family](https://www.microchip.com/en-us/product/dsPIC33CH512MP508#document-table)
+8. MPLAB® X IDE User’s Guide (DS50002027) or MPLAB® X IDE help
+9. [MPLAB® X IDE installation](http://microchipdeveloper.com/mplabx:installation)
+10. [MPLAB® XC16 Compiler installation](http://microchipdeveloper.com/xc16:installation)
+11. [Installation and setup of X2Cscope plugin for MPLAB X](https://x2cscope.github.io/docs/MPLABX_Plugin.html)
 
 
 
