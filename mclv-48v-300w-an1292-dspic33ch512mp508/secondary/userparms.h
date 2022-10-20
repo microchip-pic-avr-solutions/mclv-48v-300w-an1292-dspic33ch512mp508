@@ -45,6 +45,7 @@ extern "C" {
 // *****************************************************************************
 #include <stdint.h>
 #include <xc.h>
+#include "general.h"
 
 // *****************************************************************************
 // *****************************************************************************
@@ -52,6 +53,8 @@ extern "C" {
 // *****************************************************************************
 // *****************************************************************************
         
+
+
 /* Definition for tuning - if active the speed reference is a ramp with a 
 constant slope. The slope is determined by TUNING_DELAY_RAMPUP constant.
  the software ramp implementing the speed increase has a constant slope, 
@@ -77,15 +80,15 @@ constant slope. The slope is determined by TUNING_DELAY_RAMPUP constant.
 controllers, tuning mode will disable the speed PI controller */
 #undef TORQUE_MODE
     
-/* FOC with dual shunt is enabled */
-/* define to work with single Shunt  */    
-#undef SINGLE_SHUNT
+/* undef to work with dual Shunt  */    
+#undef SINGLE_SHUNT     
 
 /****************************** Motor Parameters ******************************/
 /********************  support xls file definitions begin *********************/
 /* The following values are given in the xls attached file */
-       
-/*Update the following motor tuning parameters while using MCLV2 build configuration*/
+    
+    
+/*Update the following motor tuning parameters while using MCLV-48V-300W build configuration*/
     
 /* Motor's number of pole pairs */
 #define NOPOLESPAIRS 5
@@ -98,13 +101,19 @@ controllers, tuning mode will disable the speed PI controller */
 #define NORM_CURRENT_CONST     0.000671
 /* normalized ls/dt value */
 #define NORM_LSDTBASE 8129
+#define NORM_LSDTBASE_SCALE 8    /* 2^NORM_LSDTBASE_SCALE is the scaling */
+#define NORM_LSDTBASE_SCALE_SHIFT        (15- NORM_LSDTBASE_SCALE)
+#define NORM_LSDTBASE_FILT_SCALE_SHIFT   (15- NORM_LSDTBASE_SCALE + 3)   
 /* normalized rs value */
 #define NORM_RS  9044
+#define NORM_RS_SCALE       4   /* 2^NORM_RS_SCALE is the scaling */ 
+#define NORM_RS_SCALE_SHIFT         (15 - NORM_RS_SCALE) 
 /* the calculation of Rs gives a value exceeding the Q15 range so,
  the normalized value is further divided by 2 to fit the 32768 limit
  this is taken care in the estim.c where the value is implied
  normalized inv kfi at base speed */
 #define NORM_INVKFIBASE  7956
+#define NORM_INVKFIBASE_SCALE	1   /* 2^NORM_INVKFIBASE_SCALE is the scaling */ 
 /* the calculation of InvKfi gives a value which not exceed the Q15 limit
    to assure that an increase of the term with 5 is possible in the lookup table
    for high flux weakening the normalized is initially divided by 2
@@ -195,7 +204,8 @@ minimum value accepted */
 #define SPEEDCNTR_PTERM        Q15(0.05)
 #define SPEEDCNTR_ITERM        Q15(0.001)
 #define SPEEDCNTR_CTERM        Q15(0.999)
-#define SPEEDCNTR_OUTMAX       0x5000
+#define SPEEDCNTR_OUTMAX       0x7FFF
+ 
 /******************************** Field Weakening *****************************/
 /* Field Weakening constant for constant torque range 
    Flux reference value */

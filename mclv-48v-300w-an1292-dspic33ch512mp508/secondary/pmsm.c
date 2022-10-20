@@ -36,7 +36,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include <libq.h>
+#include <libq.h>      
 #include "motor_control_noinline.h"
 
 #include "general.h"   
@@ -54,7 +54,8 @@
 #include "board_service.h"
 #include "diagnostics.h"
 #include "singleshunt.h"
-#include "hal/measure.h"
+#include "measure.h"
+
 
 volatile UGF_T uGF;
 
@@ -122,7 +123,7 @@ int main ( void )
     InitOscillator();
     SetupGPIOPorts();
 
-    /* Turn on LED2 to indicate Secondary is enabled and programmed */
+    /* Turn on LED1 to indicate the device is programmed */
     LED1 = 1;
     /* Initialize Peripherals */
     InitPeripherals();
@@ -137,12 +138,13 @@ int main ( void )
         
         while(1)
         {
+            ResetSingleShuntSamplePoint(&singleShuntParam);
             DiagnosticsStepMain();
             BoardService();
-            
-            if(IsPressed_Button1())
+
+            if (IsPressed_Button1())
             {
-                if(uGF.bits.RunMotor == 1)
+                if  ((uGF.bits.RunMotor == 1) || (PWM_FAULT_STATUS == 1))
                 {
                     ResetParmeters();
                 }
@@ -150,19 +152,18 @@ int main ( void )
                 {
                     EnablePWMOutputsInverterA();
                     uGF.bits.RunMotor = 1;
-                    LED2 = 1;
                 }
 
             }
-		    // Monitoring for Button 2 press in MCLV3
             if(IsPressed_Button2())
             {
-                if((uGF.bits.RunMotor == 1) && (uGF.bits.OpenLoop == 0))
+                if ((uGF.bits.RunMotor == 1) && (uGF.bits.OpenLoop == 0))
                 {
                     uGF.bits.ChangeSpeed = !uGF.bits.ChangeSpeed;
                 }
             }
-
+            /* LED2 is used as motor run Status */
+            LED2 = uGF.bits.RunMotor;
         }
 
     } // End of Main loop
@@ -193,7 +194,6 @@ int main ( void )
  */
 void ResetParmeters(void)
 {
-    LED2 = 0;
     /* Make sure ADC does not generate interrupt while initializing parameters*/
 	DisableADCInterrupt();
     
@@ -201,8 +201,8 @@ void ResetParmeters(void)
     /* Initialize Single Shunt Related parameters */
     SingleShunt_InitializeParameters(&singleShuntParam);
     INVERTERA_PWM_TRIGA = ADC_SAMPLING_POINT;
-    INVERTERA_PWM_TRIGB = LOOPTIME_TCY>>1;
-    INVERTERA_PWM_TRIGC = LOOPTIME_TCY-1;
+    INVERTERA_PWM_TRIGB = LOOPTIME_TCY>>2;
+    INVERTERA_PWM_TRIGC = LOOPTIME_TCY>>1;
     INVERTERA_PWM_PHASE3 = MIN_DUTY;
     INVERTERA_PWM_PHASE2 = MIN_DUTY;
     INVERTERA_PWM_PHASE1 = MIN_DUTY;
@@ -213,6 +213,7 @@ void ResetParmeters(void)
     INVERTERA_PWM_PDC3 = MIN_DUTY;
     INVERTERA_PWM_PDC2 = MIN_DUTY;
     INVERTERA_PWM_PDC1 = MIN_DUTY;
+    
     DisablePWMOutputsInverterA();
     
     /* Stop the motor   */
@@ -234,6 +235,7 @@ void ResetParmeters(void)
     InitFWParams();
     /* Initialize measurement parameters */
     MCAPP_MeasureCurrentInit(&measureInputs);
+
     /* Enable ADC interrupt and begin main loop timing */
     ClearADCIF();
     adcDataBuffer = ClearADCIF_ReadADCBUF();
@@ -267,10 +269,10 @@ void DoControl( void )
     /* Temporary variables for sqrt calculation of q reference */
     volatile int16_t temp_qref_pow_q15;
     
-    if(uGF.bits.OpenLoop)
+    if  (uGF.bits.OpenLoop)
     {
         /* OPENLOOP:  force rotating angle,Vd and Vq */
-        if(uGF.bits.ChangeMode)
+        if  (uGF.bits.ChangeMode)
         {
             /* Just changed to open loop */
             uGF.bits.ChangeMode = 0;
@@ -327,7 +329,7 @@ void DoControl( void )
     /* Closed Loop Vector Control */
     {
         /* if change speed indication, double the speed */
-        if(uGF.bits.ChangeSpeed)
+        if (uGF.bits.ChangeSpeed)
         {
             
             /* Potentiometer value is scaled between NOMINALSPEED_ELECTR and 
@@ -344,35 +346,36 @@ void DoControl( void )
             
             ctrlParm.targetSpeed = (__builtin_mulss(measureInputs.potValue,
                     NOMINALSPEED_ELECTR-ENDSPEED_ELECTR)>>15) +
-                    ENDSPEED_ELECTR;
+                    ENDSPEED_ELECTR;  
+            
         }
-        if(ctrlParm.speedRampCount < SPEEDREFRAMP_COUNT)
+        if  (ctrlParm.speedRampCount < SPEEDREFRAMP_COUNT)
         {
            ctrlParm.speedRampCount++; 
         }
         else
         {
-        /* Ramp generator to limit the change of the speed reference
-          the rate of change is defined by CtrlParm.qRefRamp */
-        ctrlParm.qDiff = ctrlParm.qVelRef - ctrlParm.targetSpeed;
-        /* Speed Ref Ramp */
-        if (ctrlParm.qDiff < 0)
-        {
-            /* Set this cycle reference as the sum of
-            previously calculated one plus the reference ramp value */
-            ctrlParm.qVelRef = ctrlParm.qVelRef+ctrlParm.qRefRamp;
-        }
-        else
-        {
-            /* Same as above for speed decrease */
-            ctrlParm.qVelRef = ctrlParm.qVelRef-ctrlParm.qRefRamp;
-        }
-        /* If difference less than half of ref ramp, set reference
-        directly from the pot */
-        if (_Q15abs(ctrlParm.qDiff) < (ctrlParm.qRefRamp << 1))
-        {
-            ctrlParm.qVelRef = ctrlParm.targetSpeed;
-        }
+            /* Ramp generator to limit the change of the speed reference
+              the rate of change is defined by CtrlParm.qRefRamp */
+            ctrlParm.qDiff = ctrlParm.qVelRef - ctrlParm.targetSpeed;
+            /* Speed Ref Ramp */
+            if (ctrlParm.qDiff < 0)
+            {
+                /* Set this cycle reference as the sum of
+                previously calculated one plus the reference ramp value */
+                ctrlParm.qVelRef = ctrlParm.qVelRef+ctrlParm.qRefRamp;
+            }
+            else
+            {
+                /* Same as above for speed decrease */
+                ctrlParm.qVelRef = ctrlParm.qVelRef-ctrlParm.qRefRamp;
+            }
+            /* If difference less than half of ref ramp, set reference
+            directly from the pot */
+            if (_Q15abs(ctrlParm.qDiff) < (ctrlParm.qRefRamp << 1))
+            {
+                ctrlParm.qVelRef = ctrlParm.targetSpeed;
+            }
             ctrlParm.speedRampCount = 0;
         }
         /* Tuning is generating a software ramp
@@ -380,12 +383,12 @@ void DoControl( void )
         TUNING_DELAY_RAMPUP constant */
         #ifdef TUNING
             /* if delay is not completed */
-            if(motorStartUpData.tuningDelayRampup > TUNING_DELAY_RAMPUP)
+            if (motorStartUpData.tuningDelayRampup > TUNING_DELAY_RAMPUP)
             {
                 motorStartUpData.tuningDelayRampup = 0;
             }
             /* While speed less than maximum and delay is complete */
-            if((motorStartUpData.tuningAddRampup < (MAXIMUMSPEED_ELECTR - ENDSPEED_ELECTR)) &&
+            if ((motorStartUpData.tuningAddRampup < (MAXIMUMSPEED_ELECTR - ENDSPEED_ELECTR)) &&
                                                   (motorStartUpData.tuningDelayRampup == 0) )
             {
                 /* Increment ramp add */
@@ -396,7 +399,7 @@ void DoControl( void )
             ctrlParm.qVelRef = ENDSPEED_ELECTR +  motorStartUpData.tuningAddRampup;
         #endif
 
-        if( uGF.bits.ChangeMode )
+        if (uGF.bits.ChangeMode)
         {
             /* Just changed from open loop */
             uGF.bits.ChangeMode = 0;
@@ -440,7 +443,7 @@ void DoControl( void )
         temp_qref_pow_q15 = (int16_t)(__builtin_mulss(piOutputId.out ,
                                                       piOutputId.out) >> 15);
         temp_qref_pow_q15 = Q15(MAX_VOLTAGE_VECTOR) - temp_qref_pow_q15;
-        piInputIq.piState.outMax =  _Q15sqrt (temp_qref_pow_q15);
+        piInputIq.piState.outMax = _Q15sqrt (temp_qref_pow_q15);
         piInputIq.piState.outMin = - piInputIq.piState.outMax;
 
         /* PI control for Q */
@@ -452,14 +455,14 @@ void DoControl( void )
                                        &piOutputIq.out);
         vdq.q = piOutputIq.out;
     }
-       
+      
 }
 // *****************************************************************************
 /* Function:
-   _ADCAN15Interrupt()
+   _ADCInterrupt()
 
   Summary:
-   _ADCAN15Interrupt() ISR routine
+   _ADCInterrupt() ISR routine
 
   Description:
     Does speed calculation and executes the vector update loop
@@ -511,17 +514,17 @@ void __attribute__((__interrupt__,no_auto_psv)) _ADCInterrupt()
             /* Ibus is measured and offset removed from measurement*/
             singleShuntParam.Ibus2 = (int16_t)(ADCBUF_INV_A_IBUS) - 
                                             measureInputs.current.offsetIbus;
-            ADCON3Lbits.SWCTRG = 1;
+
         break;
 
         default:
         break;  
     }
-#endif    
-    
-    if( uGF.bits.RunMotor )
+#endif
+    if (uGF.bits.RunMotor)
     {
-if (singleShuntParam.adcSamplePoint == 0)
+
+        if (singleShuntParam.adcSamplePoint == 0)
         {
              
 #ifdef SINGLE_SHUNT
@@ -537,31 +540,31 @@ if (singleShuntParam.adcSamplePoint == 0)
             iabc.a = measureInputs.current.Ia;
             iabc.b = measureInputs.current.Ib;
 #endif
-        /* Calculate qId,qIq from qSin,qCos,qIa,qIb */
-        MC_TransformClarke_Assembly(&iabc,&ialphabeta);
-        MC_TransformPark_Assembly(&ialphabeta,&sincosTheta,&idq);
+            /* Calculate qId,qIq from qSin,qCos,qIa,qIb */
+            MC_TransformClarke_Assembly(&iabc,&ialphabeta);
+            MC_TransformPark_Assembly(&ialphabeta,&sincosTheta,&idq);
 
-        /* Speed and field angle estimation */
-        Estim();
-        /* Calculate control values */
-        DoControl();
-        /* Calculate qAngle */
-        CalculateParkAngle();
-        /* if open loop */
-        if(uGF.bits.OpenLoop == 1)
-        {
-            /* the angle is given by park parameter */
-            thetaElectrical = thetaElectricalOpenLoop;
-        }
-        else
-        {
-            /* if closed loop, angle generated by estimator */
-            thetaElectrical = estimator.qRho;
-        }
-        MC_CalculateSineCosine_Assembly_Ram(thetaElectrical,&sincosTheta);
-        MC_TransformParkInverse_Assembly(&vdq,&sincosTheta,&valphabeta);
+            /* Speed and field angle estimation */
+            Estim();
+            /* Calculate control values */
+            DoControl();
+            /* Calculate qAngle */
+            CalculateParkAngle();
+            /* if open loop */
+            if (uGF.bits.OpenLoop == 1)
+            {
+                /* the angle is given by park parameter */
+                thetaElectrical = thetaElectricalOpenLoop;
+            }
+            else
+            {
+                /* if closed loop, angle generated by estimator */
+                thetaElectrical = estimator.qRho;
+            }
+            MC_CalculateSineCosine_Assembly_Ram(thetaElectrical,&sincosTheta);
+            MC_TransformParkInverse_Assembly(&vdq,&sincosTheta,&valphabeta);
 
-        MC_TransformClarkeInverseSwappedInput_Assembly(&valphabeta,&vabc);
+            MC_TransformClarkeInverseSwappedInput_Assembly(&valphabeta,&vabc);
                 
 #ifdef  SINGLE_SHUNT
             SingleShunt_CalculateSpaceVectorPhaseShifted(&vabc,pwmPeriod,&singleShuntParam);
@@ -579,8 +582,8 @@ if (singleShuntParam.adcSamplePoint == 0)
     {
         INVERTERA_PWM_TRIGA = ADC_SAMPLING_POINT;
 #ifdef SINGLE_SHUNT
-        INVERTERA_PWM_TRIGB = LOOPTIME_TCY>>1;
-        INVERTERA_PWM_TRIGC = LOOPTIME_TCY-1;
+        INVERTERA_PWM_TRIGB = LOOPTIME_TCY>>2;
+        INVERTERA_PWM_TRIGC = LOOPTIME_TCY>>1;
         singleShuntParam.pwmDutycycle1.dutycycle3 = MIN_DUTY;
         singleShuntParam.pwmDutycycle1.dutycycle2 = MIN_DUTY;
         singleShuntParam.pwmDutycycle1.dutycycle1 = MIN_DUTY;
@@ -615,6 +618,8 @@ if (singleShuntParam.adcSamplePoint == 0)
             BoardServiceStepIsr(); 
         }
         measureInputs.potValue = (int16_t)( ADCBUF_SPEED_REF_A>>1);
+        measureInputs.dcBusVoltage = (int16_t)( ADCBUF_VBUS_A>>1);
+        
         
         DiagnosticsStepIsr();
     }
@@ -648,7 +653,7 @@ if (singleShuntParam.adcSamplePoint == 0)
 void CalculateParkAngle(void)
 {
     /* if open loop */
-    if(uGF.bits.OpenLoop)
+    if (uGF.bits.OpenLoop)
     {
         /* begin with the lock sequence, for field alignment */
         if (motorStartUpData.startupLock < LOCK_TIME)
@@ -681,6 +686,10 @@ void CalculateParkAngle(void)
         {
             estimator.qRhoOffset--;
         }
+        else if(estimator.qRhoOffset < 0)
+        {
+           estimator.qRhoOffset++; 
+        }
     }
 }
 // *****************************************************************************
@@ -707,6 +716,7 @@ void CalculateParkAngle(void)
  */
 void InitControlParameters(void)
 {
+    
     ctrlParm.qRefRamp = SPEEDREFRAMP;
     ctrlParm.speedRampCount = SPEEDREFRAMP_COUNT;
     /* Set PWM period to Loop Time */

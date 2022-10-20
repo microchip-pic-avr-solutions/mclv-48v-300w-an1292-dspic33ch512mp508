@@ -4,8 +4,7 @@
  *
  * This file includes subroutine to configure UART1 Module
  * 
- * Definitions in this file are for dsPIC33CH512MP508 External Op-AMP MC PIM
- * plugged onto Motor Control Development board from Microchip.
+ * Definitions in this file are for dsPIC33CH512MP508 MC DIM.
  * 
  * Component: Slave1 Core - HAL - UART1
  * 
@@ -151,12 +150,12 @@ void UART1_Initialize (void)
     U1MODEHbits.ACTIVE = 0;
     
     /** Baud Clock Source Selection bits 
-        0b11 = 4x FCY,0b10 = 2x FCY ,0b01 = FCY ,0b00 = FCY */
+        0b11 = AFVCO/3,0b10 = FOSC ,0b01 = Reserved ,0b00 = FOSC/2 (FP) */
     U1MODEHbits.BCLKSEL = 0;
     /** UART Half-Duplex Selection Mode bit
-        1 = Half-Duplex mode: UxTX is driven high when transmitting and 
-            low when TX is Idle
-        0 = Full-Duplex mode: UxTX is driven high at all times 
+        1 = Half-Duplex mode: UxTX is driven as an output when transmitting 
+            and tri-stated when TX is Idle
+        0 = Full-Duplex mode: UxTX is driven as an output at all times 
             when both UARTEN and UTXEN are set */
     U1MODEHbits.HALFDPLX = 0;
     /** Run During Overflow Condition Mode bit
@@ -335,7 +334,7 @@ void UART1_Initialize (void)
     U1P1 = 0;
     /** Initialize UARTx Timing Parameter 2 Register */
     U1P2 = 0;
-    /** Initialize UARTx Timing Parameter 2 Register */
+    /** Initialize UARTx Timing Parameter 3 Register */
     U1P3 = 0;
     /** Initialize UARTx Timing Parameter 3 Register High */
     U1P3H = 0;

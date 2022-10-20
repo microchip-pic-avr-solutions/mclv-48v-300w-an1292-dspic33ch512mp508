@@ -59,20 +59,19 @@
 // *****************************************************************************
 #include <xc.h>
 #include <stdint.h>
+#include "userparms.h"
 // *****************************************************************************
 // *****************************************************************************
 // Section: Constants
 // *****************************************************************************
 // *****************************************************************************
 // ADC MODULE Related Definitions
-#define ADCBUF_SPEED_REF_A      ADCBUF15
-/* This defines number of current offset samples for averaging 
- * If the 2^n samples are considered specify n(in this case 2^7(= 128)=> 7*/
- #define  CURRENT_OFFSET_SAMPLE_SCALER         7
 #define ADCBUF_INV_A_IPHASE1    (int16_t)(-ADCBUF0)   
 #define ADCBUF_INV_A_IPHASE2    (int16_t)(-ADCBUF1)
 #define ADCBUF_INV_A_IBUS       ADCBUF13        
         
+#define ADCBUF_SPEED_REF_A      ADCBUF15
+#define ADCBUF_VBUS_A           ADCBUF10
 #ifdef SINGLE_SHUNT
 #define EnableADCInterrupt()   _ADCAN13IE = 1
 #define DisableADCInterrupt()  _ADCAN13IE = 0

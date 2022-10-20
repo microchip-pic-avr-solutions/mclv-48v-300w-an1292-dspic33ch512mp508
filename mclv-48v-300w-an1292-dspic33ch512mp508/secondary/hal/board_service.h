@@ -107,7 +107,6 @@ extern void BoardServiceStepIsr(void);
 extern void BoardService(void);
 extern bool IsPressed_Button1(void);
 extern bool IsPressed_Button2(void);
-
 extern void InitPeripherals(void);
 extern void PWMDutyCycleSetDualEdge(MC_DUTYCYCLEOUT_T *,MC_DUTYCYCLEOUT_T *);
 extern void PWMDutyCycleSet(MC_DUTYCYCLEOUT_T *);
